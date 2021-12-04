@@ -35,3 +35,6 @@ yarn-error.log*
 
 # local testing
 test-data
+
+# pdf.js web worker
+public/pdf.worker.js

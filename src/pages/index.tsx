@@ -1,20 +1,28 @@
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Button, HStack, Icon, VStack } from '@chakra-ui/react';
+import { AiOutlineSync } from 'react-icons/ai';
 import { FileSelect } from '../components/FileSelect';
 import { useFiles } from '../hooks/files';
 
-const Index = () => {
-    const { startProcessing, setFiles } = useFiles();
+const IndexPage = () => {
+    const { startProcessing, files } = useFiles();
 
     return (
-        <Box height="100%">
+        <VStack height="100%">
             <FileSelect />
             <HStack>
-                <Button onClick={startProcessing} mx="auto" mt="3">
+                <Button
+                    onClick={startProcessing}
+                    mx="auto"
+                    mt="3"
+                    colorScheme="green"
+                    disabled={files.length === 0}
+                    leftIcon={<Icon as={AiOutlineSync} />}
+                >
                     Convert Files
                 </Button>
             </HStack>
-        </Box>
+        </VStack>
     );
 };
 
-export default Index;
+export default IndexPage;

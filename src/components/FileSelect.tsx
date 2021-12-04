@@ -24,11 +24,11 @@ export const FileSelect = () => {
         >
             <input {...getInputProps()} required />
             {isDragActive ? (
-                <Text>Drop the files here ...</Text>
+                <Text>Drop your files here...</Text>
             ) : files.length > 0 ? (
                 <Text>{files.map((f) => f.name).join('\n')}</Text>
             ) : (
-                <Text>Drag 'n' drop some files here, or click to select files</Text>
+                <Text>Drop your files here, or click to select files...</Text>
             )}
         </Center>
     );

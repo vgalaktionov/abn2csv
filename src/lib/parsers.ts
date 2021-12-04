@@ -27,14 +27,16 @@ async function mt940Parser(fileContents: ArrayBuffer) {
 async function pdfParser(fileContents: Buffer) {
     const parsed = await pdf(fileContents);
 
+    console.log(parsed);
+
     const statementDate = parsed.match(/(?<date>\d{1,2} [a-z]+ \d{4})/gm)?.[0];
     if (!statementDate) throw new Error('invalid file format');
     const year = new Date(statementDate).getFullYear();
 
     const negativeTransactioRegex =
-        /(?<date>\d{2} [a-z]{3})(?<dateBooked>\d{2} [a-z]{3})(?<description>.*)(?<country>[A-Z]{3})(?<originalAmount>(\d{1,3}(,|\.))+\d{2})?(?<amount>(\d{1,3}(,|\.))+\d{2})Af/;
+        /(?<date>\d{2} [a-z]{3})\s*(?<dateBooked>\d{2} [a-z]{3})(?<description>.*)(?<country>[A-Z]{3})\s*(?<originalAmount>(\d{1,3}(,|\.))+\d{2})?\s*(?<amount>(\d{1,3}(,|\.))+\d{2})\s*Af/gm;
     const positiveTransactionRegex =
-        /(?<date>\d{2} [a-z]{3})(?<dateBooked>\d{2} [a-z]{3})(?<description>.*?)(?<amount>(\d{1,3}(,|\.))+\d{2})Bij/;
+        /(?<date>\d{2} [a-z]{3})\s*(?<dateBooked>\d{2} [a-z]{3})(?<description>.*?)(?<amount>(\d{1,3}(,|\.))+\d{2})\s*Bij/gm;
     const exchangeRateRegex = /(?<rate>(\d{1,3}(,|\.))+\d+)Wisselkoers (?<currency>[A-Z]{3})/gm;
 
     const transactions: Transaction[] = [];
@@ -67,26 +69,29 @@ async function pdfParser(fileContents: Buffer) {
     return transactions;
 }
 
-export async function parseFile(mimetype: string, file: File): Promise<Transaction[]> {
+export async function parseFile(file: File): Promise<Transaction[]> {
     const fileContents = await new Promise<ArrayBuffer>((res, rej) => {
         try {
             const reader = new FileReader();
             reader.onload = () => {
-                if (reader.result) res(reader.result as ArrayBuffer);
+                res(reader.result as ArrayBuffer);
             };
+            reader.onerror = rej;
             reader.readAsArrayBuffer(file);
         } catch (error) {
+            console.error(error);
             rej(error);
         }
     });
 
-    switch (mimetype) {
+    switch (file.type) {
+        case '':
         case 'application/octet-stream':
             return mt940Parser(fileContents);
         case 'application/pdf':
             return pdfParser(toBuffer(fileContents));
         default:
-            throw new Error(`mimetype ${mimetype} not supported!`);
+            throw new Error(`mimetype ${file.type} not supported!`);
     }
 }
 

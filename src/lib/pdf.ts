@@ -1,4 +1,4 @@
-import PDFJS from 'pdfjs-dist';
+import * as PDFJS from 'pdfjs-dist';
 import { PDFPageProxy, TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 
 function renderPage(pageData: PDFPageProxy) {
@@ -30,6 +30,7 @@ function renderPage(pageData: PDFPageProxy) {
 }
 
 export async function pdf(dataBuffer: Buffer) {
+    PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
     const doc = await PDFJS.getDocument(dataBuffer).promise;
 
     let text = '';

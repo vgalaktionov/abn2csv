@@ -1,4 +1,4 @@
-import { ChakraProvider, Container, Text, VStack } from '@chakra-ui/react';
+import { ChakraProvider, Container, VStack } from '@chakra-ui/react';
 import { AppProps } from 'next/app';
 import { useState } from 'react';
 import { DarkModeSwitch } from '../components/DarkModeSwitch';
@@ -15,14 +15,12 @@ function ABN2CSV({ Component, pageProps }: AppProps) {
             <FilesContext.Provider value={{ fileState, setFileState }}>
                 <VStack height="100vh" width="100vw">
                     <DarkModeSwitch />
-                    <Container height="100vh" d="flex" flexDirection="column">
+                    <Container height="100vh" d="flex" flexDirection="column" maxWidth="container.xl">
                         <Hero />
 
                         <Component {...pageProps} />
 
-                        <Footer>
-                            <Text>Next ❤️ Chakra</Text>
-                        </Footer>
+                        <Footer />
                     </Container>
                 </VStack>
             </FilesContext.Provider>

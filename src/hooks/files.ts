@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { createContext, useCallback, useContext } from 'react';
 import { parseFile, Transaction } from '../lib/parsers';
+import { csvWriter } from '../lib/writer';
 
 export interface FilesContextType {
     fileState: {
@@ -8,6 +9,7 @@ export interface FilesContextType {
         processing: boolean;
         error?: any;
         transactions: Transaction[];
+        csvString?: string;
     };
 
     setFileState: (
@@ -24,7 +26,7 @@ export const FilesContext = createContext<FilesContextType>(defaultFilesContext)
 
 export const useFiles = () => {
     const {
-        fileState: { files, processing, transactions },
+        fileState: { files, processing, transactions, csvString, error },
         setFileState,
     } = useContext(FilesContext);
     const router = useRouter();
@@ -34,16 +36,23 @@ export const useFiles = () => {
         router.push('/results');
 
         try {
-            const transactions = (await Promise.all(files.map((f) => parseFile(f.type, f)))).flat();
-            setFileState((fs) => ({ ...fs, transactions, processing: false }));
+            const transactions = (await Promise.all(files.map(parseFile))).flat();
+            if (transactions.length === 0) throw new Error('No transactions found!');
+            transactions.sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+            const csvString = csvWriter(transactions);
+            setFileState((fs) => ({ ...fs, transactions, csvString, processing: false }));
         } catch (error: unknown) {
+            console.error(error);
             setFileState((fs) => ({ ...fs, error, processing: false }));
         }
-    }, [setFileState]);
+    }, [files, setFileState, router]);
 
-    const reset = useCallback(() => setFileState(defaultFilesContext.fileState), [setFileState]);
+    const reset = useCallback(() => {
+        setFileState(defaultFilesContext.fileState);
+        router.push('/');
+    }, [setFileState, router]);
 
     const setFiles = useCallback((files: File[]) => setFileState((fs) => ({ ...fs, files })), [setFileState]);
 
-    return { files, processing, transactions, setFiles, startProcessing, reset };
+    return { files, processing, transactions, setFiles, startProcessing, reset, csvString, error };
 };
