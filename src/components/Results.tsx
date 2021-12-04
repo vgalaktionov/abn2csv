@@ -6,7 +6,7 @@ export const Results = () => {
     const { processing, transactions, csvString } = useFiles();
     const name =
         transactions.length > 0
-            ? `${transactions[0].date.toLocaleDateString('en-GB').replaceAll('/', '-')}-${transactions[
+            ? `${transactions[0].date.toLocaleDateString('en-GB').replaceAll('/', '-')}_${transactions[
                   transactions.length - 1
               ].date
                   .toLocaleDateString('en-GB')
