@@ -32,3 +32,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# local testing
+test-data

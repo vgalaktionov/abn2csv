@@ -1,14 +1,33 @@
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, Container, Text, VStack } from '@chakra-ui/react';
+import { AppProps } from 'next/app';
+import { useState } from 'react';
+import { DarkModeSwitch } from '../components/DarkModeSwitch';
+import { Footer } from '../components/Footer';
+import { Hero } from '../components/Hero';
+import { defaultFilesContext, FilesContext, FilesContextType } from '../hooks/files';
+import theme from '../theme';
 
-import theme from '../theme'
-import { AppProps } from 'next/app'
+function ABN2CSV({ Component, pageProps }: AppProps) {
+    const [fileState, setFileState] = useState<FilesContextType['fileState']>(defaultFilesContext.fileState);
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <ChakraProvider resetCSS theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
-  )
+    return (
+        <ChakraProvider resetCSS theme={theme}>
+            <FilesContext.Provider value={{ fileState, setFileState }}>
+                <VStack height="100vh" width="100vw">
+                    <DarkModeSwitch />
+                    <Container height="100vh" d="flex" flexDirection="column">
+                        <Hero />
+
+                        <Component {...pageProps} />
+
+                        <Footer>
+                            <Text>Next ❤️ Chakra</Text>
+                        </Footer>
+                    </Container>
+                </VStack>
+            </FilesContext.Provider>
+        </ChakraProvider>
+    );
 }
 
-export default MyApp
+export default ABN2CSV;
