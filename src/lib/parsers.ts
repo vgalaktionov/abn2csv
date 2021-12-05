@@ -25,7 +25,6 @@ async function mt940Parser(fileContents: ArrayBuffer) {
 
 function pdfDateParser(statementDate: string, year: number) {
     const date = new Date();
-    date.setFullYear(year);
     const [dayOfMonth, month] = statementDate.trim().split(' ');
 
     let monthNum: number;
@@ -70,8 +69,7 @@ function pdfDateParser(statementDate: string, year: number) {
             throw new Error(`invalid month: ${month}`);
     }
 
-    date.setMonth(monthNum);
-    date.setDate(+dayOfMonth);
+    date.setFullYear(year, monthNum, +dayOfMonth);
 
     return date;
 }
