@@ -38,7 +38,7 @@ export const useFiles = () => {
         try {
             const transactions = (await Promise.all(files.map(parseFile))).flat();
             if (transactions.length === 0) throw new Error('No transactions found!');
-            transactions.sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+            transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
             const csvString = csvWriter(transactions);
             setFileState((fs) => ({ ...fs, transactions, csvString, processing: false }));
         } catch (error: unknown) {
