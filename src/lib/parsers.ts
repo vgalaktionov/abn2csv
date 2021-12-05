@@ -77,8 +77,6 @@ function pdfDateParser(statementDate: string, year: number) {
 async function pdfParser(fileContents: Buffer) {
     const parsed = await pdf(fileContents);
 
-    console.log(parsed);
-
     const statementDate = parsed.match(/(?<date>\d{1,2} [a-z]+ \d{4})/gm)?.[0];
     if (!statementDate) throw new Error('invalid file format');
     const year = new Date(statementDate).getFullYear();
