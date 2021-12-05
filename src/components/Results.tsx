@@ -21,11 +21,13 @@ export const Results = () => {
                     <Text pt="6">Preview (total transactions: {transactions.length})</Text>
                     <Table fontSize="xs">
                         <Thead>
-                            <Th>id</Th>
-                            <Th>date</Th>
-                            <Th>description</Th>
-                            <Th>amount</Th>
-                            <Th>currency</Th>
+                            <Tr>
+                                <Th>id</Th>
+                                <Th>date</Th>
+                                <Th>description</Th>
+                                <Th>amount</Th>
+                                <Th>currency</Th>
+                            </Tr>
                         </Thead>
                         <Tbody>
                             {transactions.slice(0, 5).map((tr) => (
