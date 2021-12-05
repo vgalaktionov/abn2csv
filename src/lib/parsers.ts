@@ -70,6 +70,8 @@ function pdfDateParser(statementDate: string, year: number) {
     }
 
     date.setFullYear(year, monthNum, +dayOfMonth);
+    date.setMonth(monthNum, +dayOfMonth);
+    date.setDate(+dayOfMonth);
 
     return date;
 }
