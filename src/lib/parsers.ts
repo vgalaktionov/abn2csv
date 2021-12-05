@@ -24,8 +24,6 @@ async function mt940Parser(fileContents: ArrayBuffer) {
 }
 
 function pdfDateParser(statementDate: string, year: number) {
-    console.log(statementDate);
-    const date = new Date();
     const [dayOfMonth, month] = statementDate.trim().split(' ');
     const day = +dayOfMonth.replace('0', '');
 
@@ -71,11 +69,9 @@ function pdfDateParser(statementDate: string, year: number) {
             throw new Error(`invalid month: ${month}`);
     }
 
-    date.setFullYear(year, monthNum, day);
-    date.setMonth(monthNum, day);
-    date.setDate(day);
+    const date = new Date(year, monthNum, day);
 
-    if (isNaN(date.getTime())) throw new Error(`invalid date: ${date}`);
+    if (isNaN(date.getTime())) throw new Error(`invalid date: ${statementDate}`);
 
     return date;
 }
