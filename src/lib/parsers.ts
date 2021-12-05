@@ -23,6 +23,59 @@ async function mt940Parser(fileContents: ArrayBuffer) {
         }));
 }
 
+function pdfDateParser(statementDate: string, year: number) {
+    const date = new Date();
+    date.setFullYear(year);
+    const [dayOfMonth, month] = statementDate.trim().split(' ');
+
+    let monthNum: number;
+    switch (month) {
+        case 'jan':
+            monthNum = 0;
+            break;
+        case 'feb':
+            monthNum = 1;
+            break;
+        case 'mrt':
+            monthNum = 2;
+            break;
+        case 'apr':
+            monthNum = 3;
+            break;
+        case 'mei':
+            monthNum = 4;
+            break;
+        case 'jun':
+            monthNum = 5;
+            break;
+        case 'jul':
+            monthNum = 6;
+            break;
+        case 'aug':
+            monthNum = 7;
+            break;
+        case 'sep':
+            monthNum = 8;
+            break;
+        case 'okt':
+            monthNum = 9;
+            break;
+        case 'nov':
+            monthNum = 10;
+            break;
+        case 'dec':
+            monthNum = 11;
+            break;
+        default:
+            throw new Error(`invalid month: ${month}`);
+    }
+
+    date.setMonth(monthNum);
+    date.setDate(+dayOfMonth);
+
+    return date;
+}
+
 async function pdfParser(fileContents: Buffer) {
     const parsed = await pdf(fileContents);
 
@@ -40,7 +93,7 @@ async function pdfParser(fileContents: Buffer) {
     const transactions: Transaction[] = [];
 
     const parseRow = (match: Record<string, string>, sign: 1 | -1): Transaction => {
-        const date = new Date(`${match['date']} ${year}`);
+        const date = pdfDateParser(match['date'], year);
         const description = match['description'];
         const currency = match['currency'] ?? 'EUR';
         const amount = +match['amount'].replace('.', '').replace(',', '.') * sign;
