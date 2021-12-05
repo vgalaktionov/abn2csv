@@ -26,7 +26,14 @@ export const FileSelect = () => {
             {isDragActive ? (
                 <Text>Drop your files here...</Text>
             ) : files.length > 0 ? (
-                <Text>{files.map((f) => f.name).join('\n')}</Text>
+                <Text>
+                    {files.map((f) => (
+                        <span key={f.name}>
+                            {f.name}
+                            <br />
+                        </span>
+                    ))}
+                </Text>
             ) : (
                 <Text>Drop your files here, or click to select files...</Text>
             )}
