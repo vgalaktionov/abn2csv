@@ -6,7 +6,7 @@ export const Results = () => {
     const { processing, transactions, csvString } = useFiles();
     const name =
         transactions.length > 0
-            ? `${new Date().toLocaleDateString('en-GB').replaceAll('/', '-')}-abn-transactions.csv`
+            ? `${new Date().toLocaleString('en-GB').replaceAll('/', '-')}-abn-transactions.csv`
             : '';
     return (
         <Box h="100%" p="6">
