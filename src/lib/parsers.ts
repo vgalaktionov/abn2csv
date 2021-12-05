@@ -14,12 +14,12 @@ async function mt940Parser(fileContents: ArrayBuffer) {
     const statements = await mt940.read(fileContents);
     return statements
         .flatMap((st) => st.transactions)
-        .map(({ id, isExpense, amount, valueDate, currency, description }) => ({
+        .map(({ id, isCredit, amount, valueDate, currency, description }) => ({
             id,
             currency,
             description,
             date: new Date(valueDate),
-            amount: amount * (isExpense ? -1 : 1),
+            amount: amount * (isCredit ? 1 : -1),
         }));
 }
 
