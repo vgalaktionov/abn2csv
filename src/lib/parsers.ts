@@ -72,7 +72,7 @@ function pdfDateParser(statementDate: string, year: number) {
     const date = new Date(year, monthNum, day);
     if (date > new Date()) date.setFullYear(year - 1);
 
-    if (isNaN(date.getTime())) throw new Error(`invalid date: ${statementDate}`);
+    if (isNaN(date.getTime())) throw new Error(`invalid date: ${statementDate} ${year}`);
 
     return date;
 }
