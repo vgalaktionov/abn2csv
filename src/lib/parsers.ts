@@ -73,6 +73,8 @@ function pdfDateParser(statementDate: string, year: number) {
     date.setMonth(monthNum, +dayOfMonth);
     date.setDate(+dayOfMonth);
 
+    if (isNaN(date.getTime())) console.warn('invalid date', date);
+
     return date;
 }
 
