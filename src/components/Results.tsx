@@ -28,9 +28,8 @@ export const Results = () => {
                             <Th>id</Th>
                             <Th>date</Th>
                             <Th>description</Th>
-                            <Th>currency</Th>
                             <Th>amount</Th>
-                            <Th>conversionRate</Th>
+                            <Th>currency</Th>
                         </Thead>
                         <Tbody>
                             {transactions.slice(0, 5).map((tr) => (
@@ -42,9 +41,8 @@ export const Results = () => {
                                             ? tr.description.slice(0, 40) + '...'
                                             : tr.description}
                                     </Td>
-                                    <Td>{tr.currency}</Td>
                                     <Td>{tr.amount.toFixed(2)}</Td>
-                                    <Td>{tr.conversionRate?.toFixed(2) ?? ''}</Td>
+                                    <Td>{tr.currency}</Td>
                                 </Tr>
                             ))}
                         </Tbody>

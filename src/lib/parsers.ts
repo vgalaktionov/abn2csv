@@ -8,7 +8,6 @@ export interface Transaction {
     description: string;
     currency: string;
     amount: number;
-    conversionRate?: number;
 }
 
 async function mt940Parser(fileContents: ArrayBuffer) {
@@ -37,10 +36,8 @@ async function pdfParser(fileContents: Buffer) {
         /(?<date>\d{2} [a-z]{3})\s*(?<dateBooked>\d{2} [a-z]{3})(?<description>.*)(?<country>[A-Z]{3})\s*(?<originalAmount>(\d{1,3}(,|\.))+\d{2})?\s*(?<amount>(\d{1,3}(,|\.))+\d{2})\s*Af/gm;
     const positiveTransactionRegex =
         /(?<date>\d{2} [a-z]{3})\s*(?<dateBooked>\d{2} [a-z]{3})(?<description>.*?)(?<amount>(\d{1,3}(,|\.))+\d{2})\s*Bij/gm;
-    const exchangeRateRegex = /(?<rate>(\d{1,3}(,|\.))+\d+)Wisselkoers (?<currency>[A-Z]{3})/gm;
 
     const transactions: Transaction[] = [];
-    let exchangeRateExpected = false;
 
     const parseRow = (match: Record<string, string>, sign: 1 | -1): Transaction => {
         const date = new Date(`${match['date']} ${year}`);
@@ -58,12 +55,6 @@ async function pdfParser(fileContents: Buffer) {
             transactions.push(parseRow(match, 1));
         } else if ((match = negativeTransactioRegex.exec(row)?.groups)) {
             transactions.push(parseRow(match, -1));
-            if (match['originalAmount']) exchangeRateExpected = true;
-        } else if (exchangeRateExpected && (match = exchangeRateRegex.exec(row)?.groups)) {
-            const transaction = transactions[transactions.length - 1];
-            transaction.conversionRate = +match['rate'].replace('.', '').replace(',', '.');
-            transaction.currency = match['currency'];
-            exchangeRateExpected = false;
         }
     }
     return transactions;
