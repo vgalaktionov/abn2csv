@@ -1,14 +1,4 @@
-import {
-    Box,
-    Flex,
-    Heading,
-    HStack,
-    Link as ChakraLink,
-    ListItem,
-    Text,
-    UnorderedList,
-    VStack,
-} from '@chakra-ui/react';
+import { Box, Heading, Link as ChakraLink, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 
 export const Hero = () => (
@@ -20,15 +10,5 @@ export const Hero = () => (
                 </ChakraLink>
             </Link>
         </Box>
-        <Text textAlign="center">Convert ABN AMRO transaction exports to CSV in your browser.</Text>
-        <Flex fontSize="sm" color="gray.500" width="100%" justifyContent="center">
-            <HStack width="100%" mx="auto" justifyContent="center">
-                <Text mr="9">Formats supported:</Text>
-                <UnorderedList>
-                    <ListItem>ABN AMRO checking/savings MT940 files</ListItem>
-                    <ListItem>ABN AMRO ICS credit card PDF files</ListItem>
-                </UnorderedList>
-            </HStack>
-        </Flex>
     </VStack>
 );
