@@ -24,6 +24,7 @@ async function mt940Parser(fileContents: ArrayBuffer) {
 }
 
 function pdfDateParser(statementDate: string, year: number) {
+    console.log(statementDate);
     const date = new Date();
     const [dayOfMonth, month] = statementDate.trim().split(' ');
     const day = +dayOfMonth.replace('0', '');
