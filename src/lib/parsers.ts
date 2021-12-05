@@ -23,10 +23,7 @@ async function mt940Parser(fileContents: ArrayBuffer) {
         }));
 }
 
-function pdfDateParser(statementDate: string, year: number) {
-    const [dayOfMonth, month] = statementDate.trim().split(' ');
-    const day = +dayOfMonth.replace('0', '');
-
+function monthParser(month: string) {
     let monthNum: number;
     switch (month) {
         case 'jan':
@@ -68,6 +65,18 @@ function pdfDateParser(statementDate: string, year: number) {
         default:
             throw new Error(`invalid month: ${month}`);
     }
+    return monthNum;
+}
+
+function dayParser(day: string) {
+    return +day.replace('0', '');
+}
+
+function pdfDateParser(statementDate: string, year: number) {
+    const [dayOfMonth, month] = statementDate.trim().split(' ');
+    const day = dayParser(dayOfMonth);
+
+    const monthNum = monthParser(month);
 
     const date = new Date(year, monthNum, day);
     if (date > new Date()) date.setFullYear(year - 1);
@@ -82,7 +91,7 @@ async function pdfParser(fileContents: Buffer) {
 
     const statementDate = parsed.match(/(?<date>\d{1,2} [a-z]+ \d{4})/gm)?.[0];
     if (!statementDate) throw new Error('invalid file format');
-    const year = new Date(statementDate).getFullYear();
+    const [_day, _month, year] = statementDate.split(' ');
 
     const negativeTransactioRegex =
         /(?<date>\d{2} [a-z]{3})\s*(?<dateBooked>\d{2} [a-z]{3})(?<description>.*)(?<country>[A-Z]{3})\s*(?<originalAmount>(\d{1,3}(,|\.))+\d{2})?\s*(?<amount>(\d{1,3}(,|\.))+\d{2})\s*Af/gm;
@@ -92,7 +101,7 @@ async function pdfParser(fileContents: Buffer) {
     const transactions: Transaction[] = [];
 
     const parseRow = (match: Record<string, string>, sign: 1 | -1): Transaction => {
-        const date = pdfDateParser(match['date'], year);
+        const date = pdfDateParser(match['date'], +year);
         const description = match['description'];
         const currency = match['currency'] ?? 'EUR';
         const amount = +match['amount'].replace('.', '').replace(',', '.') * sign;
